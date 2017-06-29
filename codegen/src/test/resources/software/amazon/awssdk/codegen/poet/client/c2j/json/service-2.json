@@ -28,6 +28,22 @@
       ],
       "documentation": "<p>Performs a post operation to the query service and has no output</p>"
     },
+    "APostOperationWithoutRequiredMembers": {
+      "name": "APostOperationWithoutRequiredMembers",
+      "http": {
+        "method": "POST",
+        "requestUri": "/"
+      },
+      "input": {
+        "shape": "APostOperationWithoutRequiredMembersRequest"
+      },
+      "errors": [
+        {
+          "shape": "InvalidInputException"
+        }
+      ],
+      "documentation": "<p>Performs a post operation to the query service and has no output</p>"
+    },
     "APostOperationWithOutput": {
       "name": "APostOperation",
       "http": {
@@ -55,6 +71,19 @@
       "required": [
         "SomeNestedMember"
       ],
+      "members": {
+        "SomeNestedMember": {
+          "shape": "nestedMember",
+          "documentation": "<p>a member that has nested members</p>"
+        },
+        "OptionalMember": {
+          "shape": "dateType",
+          "documentation": "<p>An optional member</p>"
+        }
+      }
+    },
+    "APostOperationWithoutRequiredMembersRequest": {
+      "type": "structure",
       "members": {
         "SomeNestedMember": {
           "shape": "nestedMember",

@@ -20,6 +20,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
@@ -164,16 +165,45 @@ public class SyncClientClass implements ClassSpec {
     }
 
     private List<MethodSpec> operations() {
-        return model.getOperations().values().stream().map(this::operationMethodSpec).collect(Collectors.toList());
+        return model.getOperations().values().stream()
+                    .map(this::operationMethodSpec)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
     }
 
-    private MethodSpec operationMethodSpec(OperationModel opModel) {
-        return SyncClientInterface.operationMethodSignature(model, opModel)
+    private List<MethodSpec> operationMethodSpec(OperationModel opModel) {
+        List<MethodSpec> methods = new ArrayList<>();
+
+        if (opModel.getInputShape().getRequired() == null || opModel.getInputShape().getRequired().size() == 0) {
+            methods.add(simpleMethod(opModel));
+        }
+
+        methods.add(SyncClientInterface.operationMethodSignature(model, opModel)
                                   .addAnnotation(Override.class)
                                   .addCode(protocolSpec.responseHandler(opModel))
                                   .addCode(protocolSpec.errorResponseHandler(opModel))
                                   .addCode(protocolSpec.executionHandler(opModel))
-                                  .build();
+                                  .build());
+
+        return methods;
+    }
+
+    private MethodSpec simpleMethod(OperationModel opModel) {
+        MethodSpec.Builder builder = SyncClientInterface.operationSimpleMethodSignature(model, opModel)
+                           .addAnnotation(Override.class)
+                           .addCode("return $N($N.builder().build()",
+                                         opModel.getMethodName(),
+                                         opModel.getInput().getVariableType());
+
+        if (opModel.hasStreamingInput()) {
+            builder.addCode(", requestBody");
+        }
+
+        if (opModel.hasStreamingOutput()) {
+            builder.addCode(", streamingHandler");
+        }
+
+        return builder.addCode(");").build();
     }
 
     private MethodSpec waiters() {

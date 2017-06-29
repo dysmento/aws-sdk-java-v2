@@ -19,11 +19,15 @@ import software.amazon.awssdk.services.json.model.APostOperationRequest;
 import software.amazon.awssdk.services.json.model.APostOperationResponse;
 import software.amazon.awssdk.services.json.model.APostOperationWithOutputRequest;
 import software.amazon.awssdk.services.json.model.APostOperationWithOutputResponse;
+import software.amazon.awssdk.services.json.model.APostOperationWithoutRequiredMembersRequest;
+import software.amazon.awssdk.services.json.model.APostOperationWithoutRequiredMembersResponse;
 import software.amazon.awssdk.services.json.model.InvalidInputException;
 import software.amazon.awssdk.services.json.transform.APostOperationRequestMarshaller;
 import software.amazon.awssdk.services.json.transform.APostOperationResponseUnmarshaller;
 import software.amazon.awssdk.services.json.transform.APostOperationWithOutputRequestMarshaller;
 import software.amazon.awssdk.services.json.transform.APostOperationWithOutputResponseUnmarshaller;
+import software.amazon.awssdk.services.json.transform.APostOperationWithoutRequiredMembersRequestMarshaller;
+import software.amazon.awssdk.services.json.transform.APostOperationWithoutRequiredMembersResponseUnmarshaller;
 
 /**
  * Internal implementation of {@link JsonAsyncClient}.
@@ -39,7 +43,7 @@ final class DefaultJsonAsyncClient implements JsonAsyncClient {
 
     protected DefaultJsonAsyncClient(AwsAsyncClientParams clientParams) {
         this.clientHandler = new SdkAsyncClientHandler(new ClientHandlerParams().withAsyncClientParams(clientParams)
-                                                                                .withClientParams(clientParams).withCalculateCrc32FromCompressedDataEnabled(false));
+                .withClientParams(clientParams).withCalculateCrc32FromCompressedDataEnabled(false));
         this.protocolFactory = init();
     }
 
@@ -75,8 +79,8 @@ final class DefaultJsonAsyncClient implements JsonAsyncClient {
         HttpResponseHandler<AmazonServiceException> errorResponseHandler = createErrorResponseHandler();
 
         return clientHandler.execute(new ClientExecutionParams<APostOperationRequest, APostOperationResponse>()
-                                             .withMarshaller(new APostOperationRequestMarshaller(protocolFactory)).withResponseHandler(responseHandler)
-                                             .withErrorResponseHandler(errorResponseHandler).withInput(aPostOperationRequest));
+                .withMarshaller(new APostOperationRequestMarshaller(protocolFactory)).withResponseHandler(responseHandler)
+                .withErrorResponseHandler(errorResponseHandler).withInput(aPostOperationRequest));
     }
 
     /**
@@ -113,9 +117,81 @@ final class DefaultJsonAsyncClient implements JsonAsyncClient {
 
         return clientHandler
                 .execute(new ClientExecutionParams<APostOperationWithOutputRequest, APostOperationWithOutputResponse>()
-                                 .withMarshaller(new APostOperationWithOutputRequestMarshaller(protocolFactory))
-                                 .withResponseHandler(responseHandler).withErrorResponseHandler(errorResponseHandler)
-                                 .withInput(aPostOperationWithOutputRequest));
+                        .withMarshaller(new APostOperationWithOutputRequestMarshaller(protocolFactory))
+                        .withResponseHandler(responseHandler).withErrorResponseHandler(errorResponseHandler)
+                        .withInput(aPostOperationWithOutputRequest));
+    }
+
+    /**
+     * <p>
+     * Performs a post operation to the query service and has no output
+     * </p>
+     *
+     * @param aPostOperationWithoutRequiredMembersRequest
+     * @return A Java Future containing the result of the APostOperationWithoutRequiredMembers operation returned by the
+     *         service. <br/>
+     *         The CompletableFuture returned by this method can be completed exceptionally with the following
+     *         exceptions.
+     *         <ul>
+     *         <li>InvalidInputException The request was rejected because an invalid or out-of-range value was supplied
+     *         for an input parameter.</li>
+     *         <li>SdkBaseException Base class for all exceptions that can be thrown by the SDK (both service and
+     *         client). Can be used for catch all scenarios.</li>
+     *         <li>SdkClientException If any client side error occurs such as an IO related failure, failure to get
+     *         credentials, etc</li>
+     *         <li>JsonException Base class for all service exceptions. Unknown exceptions will be thrown as an instance
+     *         of this</li >
+     *         <ul>
+     * @sample JsonAsyncClient.APostOperationWithoutRequiredMembers
+     * @see <a
+     *      href="http://docs.aws.amazon.com/goto/WebAPI/json-service-2010-05-08/APostOperationWithoutRequiredMembers"
+     *      target="_top">AWS API Documentation</a>
+     */
+    @Override
+    public CompletableFuture<APostOperationWithoutRequiredMembersResponse> aPostOperationWithoutRequiredMembers() {
+        return aPostOperationWithoutRequiredMembers(APostOperationWithoutRequiredMembersRequest.builder().build());
+    }
+
+    /**
+     * <p>
+     * Performs a post operation to the query service and has no output
+     * </p>
+     *
+     * @param aPostOperationWithoutRequiredMembersRequest
+     * @return A Java Future containing the result of the APostOperationWithoutRequiredMembers operation returned by the
+     *         service. <br/>
+     *         The CompletableFuture returned by this method can be completed exceptionally with the following
+     *         exceptions.
+     *         <ul>
+     *         <li>InvalidInputException The request was rejected because an invalid or out-of-range value was supplied
+     *         for an input parameter.</li>
+     *         <li>SdkBaseException Base class for all exceptions that can be thrown by the SDK (both service and
+     *         client). Can be used for catch all scenarios.</li>
+     *         <li>SdkClientException If any client side error occurs such as an IO related failure, failure to get
+     *         credentials, etc</li>
+     *         <li>JsonException Base class for all service exceptions. Unknown exceptions will be thrown as an instance
+     *         of this</li >
+     *         <ul>
+     * @sample JsonAsyncClient.APostOperationWithoutRequiredMembers
+     * @see <a
+     *      href="http://docs.aws.amazon.com/goto/WebAPI/json-service-2010-05-08/APostOperationWithoutRequiredMembers"
+     *      target="_top">AWS API Documentation</a>
+     */
+    @Override
+    public CompletableFuture<APostOperationWithoutRequiredMembersResponse> aPostOperationWithoutRequiredMembers(
+            APostOperationWithoutRequiredMembersRequest aPostOperationWithoutRequiredMembersRequest) {
+
+        HttpResponseHandler<APostOperationWithoutRequiredMembersResponse> responseHandler = protocolFactory
+                .createResponseHandler(new JsonOperationMetadata().withPayloadJson(true),
+                        new APostOperationWithoutRequiredMembersResponseUnmarshaller());
+
+        HttpResponseHandler<AmazonServiceException> errorResponseHandler = createErrorResponseHandler();
+
+        return clientHandler
+                .execute(new ClientExecutionParams<APostOperationWithoutRequiredMembersRequest, APostOperationWithoutRequiredMembersResponse>()
+                        .withMarshaller(new APostOperationWithoutRequiredMembersRequestMarshaller(protocolFactory))
+                        .withResponseHandler(responseHandler).withErrorResponseHandler(errorResponseHandler)
+                        .withInput(aPostOperationWithoutRequiredMembersRequest));
     }
 
     @Override
@@ -125,12 +201,12 @@ final class DefaultJsonAsyncClient implements JsonAsyncClient {
 
     private software.amazon.awssdk.protocol.json.SdkJsonProtocolFactory init() {
         return new SdkJsonProtocolFactory(new JsonClientMetadata()
-                                                  .withProtocolVersion("1.1")
-                                                  .withSupportsCbor(false)
-                                                  .withSupportsIon(false)
-                                                  .withBaseServiceExceptionClass(software.amazon.awssdk.services.json.model.JsonException.class)
-                                                  .addErrorMetadata(
-                                                          new JsonErrorShapeMetadata().withErrorCode("InvalidInput").withModeledClass(InvalidInputException.class)));
+                .withProtocolVersion("1.1")
+                .withSupportsCbor(false)
+                .withSupportsIon(false)
+                .withBaseServiceExceptionClass(software.amazon.awssdk.services.json.model.JsonException.class)
+                .addErrorMetadata(
+                        new JsonErrorShapeMetadata().withErrorCode("InvalidInput").withModeledClass(InvalidInputException.class)));
     }
 
     private HttpResponseHandler<AmazonServiceException> createErrorResponseHandler() {
